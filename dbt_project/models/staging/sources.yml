@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: raw_zone
+    database: job_market
+    schema: raw
+    tables:
+      - name: jobs_raw

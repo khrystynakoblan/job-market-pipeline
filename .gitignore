@@ -30,3 +30,8 @@ env/
 dbt_project/target/
 dbt_project/logs/
 data_*.json
+
+# dbt
+logs/
+target/
+dbt_packages/
