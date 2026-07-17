@@ -1,0 +1,27 @@
+version: 2
+
+models:
+  - name: stg_jobs
+    description: "Cleaned and standardized job posting data from the Adzuna API"
+    columns:
+      - name: job_key
+        description: "Unique surrogate key"
+        tests:
+          - unique
+          - not_null
+
+      - name: job_id
+        description: "Original job identifier from the API"
+        tests:
+          - unique
+          - not_null
+
+      - name: job_title
+        description: "Job title"
+        tests:
+          - not_null
+
+      - name: date_posted
+        description: "Date the job was posted"
+        tests:
+          - not_null
