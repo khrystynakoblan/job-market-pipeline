@@ -1,0 +1,132 @@
+version: 2
+
+models:
+  - name: dim_companies
+    description: "Company dimension with one row per unique employer"
+    columns:
+      - name: company_key
+        description: "Surrogate key for the company dimension"
+        tests:
+          - unique
+          - not_null
+
+      - name: company_name
+        description: "Standardized company display name"
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_locations
+    description: "Location dimension with one row per unique city and region combination"
+    columns:
+      - name: location_key
+        description: "Surrogate key for the location dimension"
+        tests:
+          - unique
+          - not_null
+
+      - name: city
+        description: "City name parsed from the job location"
+        tests:
+          - not_null
+
+      - name: region
+        description: "Region name parsed from the job location"
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - city
+            - region
+
+  - name: fct_job_postings
+    description: "Fact table of job postings linked to company and location dimensions"
+    columns:
+      - name: job_key
+        description: "Unique surrogate key for the job posting"
+        tests:
+          - unique
+          - not_null
+
+      - name: job_id
+        description: "Original job identifier from the source API"
+        tests:
+          - unique
+          - not_null
+
+      - name: job_title
+        description: "Job title"
+        tests:
+          - not_null
+
+      - name: company_key
+        description: "Foreign key to dim_companies"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_companies')
+              field: company_key
+
+      - name: location_key
+        description: "Foreign key to dim_locations"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_locations')
+              field: location_key
+
+      - name: category
+        description: "Job category label from the source API"
+        tests:
+          - not_null
+
+      - name: contract_type
+        description: "Employment contract type"
+        tests:
+          - accepted_values:
+              values:
+                - permanent
+                - contract
+                - part_time
+                - temporary
+
+      - name: latitude
+        description: "Job location latitude"
+
+      - name: longitude
+        description: "Job location longitude"
+
+      - name: salary_min
+        description: "Minimum advertised salary"
+
+      - name: salary_max
+        description: "Maximum advertised salary"
+
+      - name: salary_avg
+        description: "Average of salary_min and salary_max when both values are present"
+
+      - name: is_salary_predicted
+        description: "Whether the salary was predicted by the source API"
+        tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
+              quote: false
+
+      - name: date_posted
+        description: "Date the job was posted"
+        tests:
+          - not_null
+
+      - name: job_url
+        description: "Redirect URL to the job posting"
+        tests:
+          - not_null
+
+      - name: description
+        description: "Full job description text"
+
+      - name: source_file
+        description: "Source file name from the raw ingestion layer"
+        tests:
+          - not_null
