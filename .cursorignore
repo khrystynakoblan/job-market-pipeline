@@ -1,0 +1,10 @@
+.env
+*.pem
+*.key
+
+venv/
+__pycache__/
+
+*.json
+*.csv
+*.parquet
