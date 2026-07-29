@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from airflow import DAG
+from airflow.operators.bash import BashOperator
 from airflow.operators.empty import EmptyOperator
 
 with DAG(
@@ -10,10 +11,28 @@ with DAG(
     catchup=False,
     tags=["job-market"],
 ) as dag:
-    extract_task = EmptyOperator(task_id="extract_task")
-    load_raw_task = EmptyOperator(task_id="load_raw_task")
-    dbt_run_task = EmptyOperator(task_id="dbt_run_task")
-    dbt_test_task = EmptyOperator(task_id="dbt_test_task")
+    
+    extract_task = BashOperator(
+        task_id="extract_task",
+        bash_command="python /opt/airflow/extractors/extract_jobs.py",
+    )
+
+    dbt_run_task = BashOperator(
+        task_id="dbt_run_task",
+        bash_command=(
+            "dbt run --project-dir /opt/airflow/dbt_project "
+            "--profiles-dir /opt/airflow/dbt_project"
+        ),
+    )
+
+    dbt_test_task = BashOperator(
+        task_id="dbt_test_task",
+        bash_command=(
+            "dbt test --project-dir /opt/airflow/dbt_project "
+            "--profiles-dir /opt/airflow/dbt_project"
+        ),
+    )
+
     notify_task = EmptyOperator(task_id="notify_task")
 
-    extract_task >> load_raw_task >> dbt_run_task >> dbt_test_task >> notify_task
+    extract_task >> dbt_run_task >> dbt_test_task >> notify_task

@@ -1,5 +1,7 @@
 x-airflow-common: &airflow-common
-  image: apache/airflow:2.7.3
+  image: apache/airflow:2.9.1-python3.12
+  env_file:
+    - .env
   environment: &airflow-common-env
     AIRFLOW_UID: ${AIRFLOW_UID:-50000}
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
@@ -8,10 +10,17 @@ x-airflow-common: &airflow-common
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "true"
     AIRFLOW__CORE__LOAD_EXAMPLES: "false"
     AIRFLOW__API__AUTH_BACKENDS: airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session
+    _PIP_ADDITIONAL_REQUIREMENTS: "requests sqlalchemy psycopg2-binary python-dotenv dbt-postgres"
+    POSTGRES_USER: ${POSTGRES_USER}
+    POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    POSTGRES_DB: ${POSTGRES_DB}
   volumes:
     - ./dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs
     - ./plugins:/opt/airflow/plugins
+    - ./extractors:/opt/airflow/extractors
+    - ./dbt_project:/opt/airflow/dbt_project
+    - ./.env:/opt/airflow/extractors/.env
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     postgres:

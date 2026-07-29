@@ -15,12 +15,12 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-MINIO_ENDPOINT = "http://localhost:9000"
+MINIO_ENDPOINT = "http://minio:9000"
 MINIO_ACCESS_KEY = os.getenv("MINIO_ROOT_USER")
 MINIO_SECRET_KEY = os.getenv("MINIO_ROOT_PASSWORD")
 BUCKET_NAME = "raw-data"
 
-POSTGRES_HOST = "localhost"
+POSTGRES_HOST = "postgres"
 POSTGRES_PORT = 5432
 POSTGRES_USER = os.getenv("POSTGRES_USER")
 POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
