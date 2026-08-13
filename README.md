@@ -211,6 +211,8 @@ The **Job Market Insights** dashboard includes four visualizations:
 3. **Salary Distribution by City** — bar chart
 4. **Job Postings by Company** — row chart
 
+<img width="2113" height="1112" alt="image" src="https://github.com/user-attachments/assets/fe1af0e2-ba56-4e8d-a096-0041d0960b61" />
+
 The PostgreSQL connection (schema `marts`) is configured automatically via `metabase/setup_dashboard.py`.
 
 ---
