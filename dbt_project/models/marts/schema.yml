@@ -130,3 +130,49 @@ models:
         description: "Source file name from the raw ingestion layer"
         tests:
           - not_null
+
+  - name: rpt_top_skills
+    description: "Top 10 in-demand skills detected in job titles and descriptions"
+    columns:
+      - name: skill
+        tests:
+          - unique
+          - not_null
+      - name: job_count
+        tests:
+          - not_null
+      - name: skill_rank
+        tests:
+          - unique
+          - not_null
+
+  - name: rpt_salary_by_city
+    description: "Salary distribution metrics aggregated by city"
+    columns:
+      - name: city
+        tests:
+          - not_null
+      - name: job_count
+        tests:
+          - not_null
+
+  - name: rpt_weekly_job_trends
+    description: "Weekly count of job postings for trend analysis"
+    columns:
+      - name: week_start
+        tests:
+          - unique
+          - not_null
+      - name: job_count
+        tests:
+          - not_null
+
+  - name: rpt_jobs_by_company
+    description: "Job posting counts grouped by company"
+    columns:
+      - name: company_name
+        tests:
+          - not_null
+      - name: job_count
+        tests:
+          - not_null
