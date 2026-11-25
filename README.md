@@ -204,6 +204,9 @@ extract_task → dbt_run_task → dbt_test_task → notify_task
 
 The dashboard includes four visualizations, each built on a reporting model:
 
+<img width="2114" height="1108" alt="image" src="https://github.com/user-attachments/assets/be8d9ab6-71ff-4a8e-8477-c828864ceedb" />
+
+
 | Visualization | Source table |
 |---|---|
 | Top 10 Skills | `public_marts.rpt_top_skills` |
