@@ -26,12 +26,12 @@ models:
           - not_null
 
       - name: city
-        description: "City name parsed from the job location"
+        description: "Town derived from the Adzuna location hierarchy, 'Unspecified' when unknown"
         tests:
           - not_null
 
       - name: region
-        description: "Region name parsed from the job location"
+        description: "Top-level UK region from the Adzuna location hierarchy"
 
     tests:
       - dbt_utils.unique_combination_of_columns:
@@ -147,13 +147,19 @@ models:
           - not_null
 
   - name: rpt_salary_by_city
-    description: "Salary distribution metrics aggregated by city"
+    description: "Salary distribution metrics for the top 10 cities by number of job postings with salary data"
     columns:
       - name: city
         tests:
+          - unique
           - not_null
       - name: job_count
         tests:
+          - not_null
+      - name: city_rank
+        description: "Rank of the city by job_count, ties broken alphabetically"
+        tests:
+          - unique
           - not_null
 
   - name: rpt_weekly_job_trends
@@ -168,11 +174,17 @@ models:
           - not_null
 
   - name: rpt_jobs_by_company
-    description: "Job posting counts grouped by company"
+    description: "Job posting counts for the top 8 companies"
     columns:
       - name: company_name
         tests:
+          - unique
           - not_null
       - name: job_count
         tests:
+          - not_null
+      - name: company_rank
+        description: "Rank of the company by job_count, ties broken alphabetically"
+        tests:
+          - unique
           - not_null

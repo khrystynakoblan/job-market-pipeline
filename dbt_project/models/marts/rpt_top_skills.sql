@@ -31,7 +31,7 @@ job_skill_matches as (
     cross join skill_catalog as skills
     where lower(
         coalesce(jobs.description, '') || ' ' || coalesce(jobs.job_title, '')
-    ) like '%' || skills.skill || '%'
+    ) ~ ('\m' || skills.skill || '\M')
 ),
 
 ranked_skills as (

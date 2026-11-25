@@ -61,7 +61,7 @@ flowchart LR
 2. **Load** — JSON is stored in MinIO, then loaded into `raw.jobs_raw`.
 3. **Transform** — dbt builds staging → intermediate → marts models.
 4. **Orchestrate** — Airflow runs the pipeline daily with retries and SLA.
-5. **Visualize** — Metabase reads the `marts` schema and renders the dashboard.
+5. **Visualize** — Metabase reads the `public_marts` schema and renders the dashboard.
 
 ---
 
@@ -92,7 +92,6 @@ job-market-pipeline/
 │       ├── intermediate/    # int_jobs_enriched
 │       └── marts/           # dim_*, fct_*, rpt_*
 ├── extractors/              # Python ETL scripts
-├── metabase/                # Dashboard auto-setup
 ├── docker/                  # Postgres init scripts
 ├── .github/workflows/       # CI pipeline
 ├── docker-compose.yml
@@ -116,7 +115,7 @@ job-market-pipeline/
 | | `rpt_weekly_job_trends` | Weekly job posting trends |
 | | `rpt_jobs_by_company` | Job distribution by company |
 
-Marts models are stored in the PostgreSQL schema **`marts`**.
+Marts models are stored in the PostgreSQL schema **`public_marts`** (dbt combines the target schema `public` with the custom schema `marts`).
 
 ---
 
@@ -166,7 +165,6 @@ In the Airflow UI ([http://localhost:8080](http://localhost:8080)), enable the *
 docker exec -it jmp_postgres psql -U jmp_user -d job_market -c "CREATE DATABASE metabase;"
 
 docker compose up -d metabase
-docker compose run --rm metabase-setup
 ```
 
 Open [http://localhost:3000](http://localhost:3000) → **Job Market Insights** dashboard.
@@ -204,14 +202,15 @@ extract_task → dbt_run_task → dbt_test_task → notify_task
 
 ## Metabase
 
-The **Job Market Insights** dashboard includes four visualizations:
+The dashboard includes four visualizations, each built on a reporting model:
 
-1. **Top 10 Skills by Demand** — bar chart
-2. **Weekly Job Posting Trend** — line chart
-3. **Salary Distribution by City** — bar chart
-4. **Job Postings by Company** — row chart
+| Visualization | Source table |
+|---|---|
+| Top 10 Skills | `public_marts.rpt_top_skills` |
+| Weekly Job Trends | `public_marts.rpt_weekly_job_trends` |
+| Salary Distribution by City | `public_marts.rpt_salary_by_city` |
+| Jobs by Company | `public_marts.rpt_jobs_by_company` |
 
-The PostgreSQL connection (schema `marts`) is configured automatically via `metabase/setup_dashboard.py`.
 
 ---
 

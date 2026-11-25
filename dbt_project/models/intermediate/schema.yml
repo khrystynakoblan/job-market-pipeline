@@ -33,10 +33,14 @@ models:
         description: "Employment contract type"
 
       - name: city
-        description: "City parsed from location_name (text before the first comma)"
+        description: "Town derived from the Adzuna location hierarchy; London districts roll up to London, 'Unspecified' when only country or region is known"
+        tests:
+          - not_null
 
       - name: region
-        description: "Region parsed from location_name (text after the first comma)"
+        description: "Top-level UK region from the Adzuna location hierarchy (e.g. London, Scotland, North West England)"
+        tests:
+          - not_null
 
       - name: latitude
         description: "Job location latitude"

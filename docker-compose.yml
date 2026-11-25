@@ -9,6 +9,7 @@ x-airflow-common: &airflow-common
     AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY:-46BKJo0dkRbJdKiselfgUscQASYsemnI}
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "true"
     AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+    AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: "true"
     AIRFLOW__API__AUTH_BACKENDS: airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session
     _PIP_ADDITIONAL_REQUIREMENTS: "requests sqlalchemy psycopg2-binary python-dotenv dbt-postgres"
     POSTGRES_USER: ${POSTGRES_USER}
@@ -139,28 +140,6 @@ services:
       timeout: 5s
       retries: 12
       start_period: 90s
-
-  metabase-setup:
-    image: python:3.12-slim
-    container_name: jmp_metabase_setup
-    env_file:
-      - .env
-    environment:
-      METABASE_URL: http://metabase:3000
-      POSTGRES_HOST: postgres
-      POSTGRES_PORT: 5432
-      METABASE_ADMIN_EMAIL: ${METABASE_ADMIN_EMAIL:-admin@jobmarket.local}
-      METABASE_ADMIN_PASSWORD: ${METABASE_ADMIN_PASSWORD:-metabase_admin}
-    volumes:
-      - ./metabase:/app
-    working_dir: /app
-    command: >
-      bash -c "pip install -q requests &&
-      python setup_dashboard.py"
-    depends_on:
-      metabase:
-        condition: service_healthy
-    restart: "no"
 
 volumes:
   postgres_data:

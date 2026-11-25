@@ -28,5 +28,6 @@ inner join {{ ref('dim_companies') }} as companies
     on jobs.company_name = companies.company_name
 
 inner join {{ ref('dim_locations') }} as locations
-    on jobs.city = locations.city
-    and jobs.region is not distinct from locations.region
+    on
+        jobs.city = locations.city
+        and jobs.region is not distinct from locations.region
